@@ -217,7 +217,6 @@ function make_plot(data) {
 
   { const info = make(fig,'div');
     info.className = 'info';
-    const fmt = d3.format('.3~g');
     let bin;
     svg_node.onmousemove = function(e) {
       const cmt = this.getScreenCTM();
@@ -226,7 +225,7 @@ function make_plot(data) {
       if (bin < 1) bin = 1;
       else if (bin > nbins) bin = nbins;
       info.textContent =
-        `bin ${bin} [${fmt(axis[bin-1])},${fmt(axis[bin])}): `
+        `bin ${bin} [${axis[bin-1]},${axis[bin]}): `
         + JSON.stringify(bins[bin]);
     }
   }
@@ -249,7 +248,7 @@ function load_plot(path) {
   ).catch(e => { alert(e.message); throw e; });
 }
 
-let root = 'https://ivankp.github.io/web-plots/';
+let root = 'https://ivankp.github.io/diphoton_pileup/';
 document.addEventListener('DOMContentLoaded', () => {
   if (window.location.href.match(/^http/)) root = '';
   const search = window.location.search.match(/(?<=\?)[^&]+/);
