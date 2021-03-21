@@ -267,7 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
       for (const [,name,x] of
         Object.entries(tree).map(x => {
           const [key,val] = x;
-          const tokens = key.split(/([0-9.+-]+)/);
+          const tokens = key.split(
+            /([-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?)/);
           for (let i=0, n = tokens.length; i<n; ++i) {
             if (i%2) tokens[i] = parseFloat(tokens[i]);
             else tokens[i] = tokens[i].toLowerCase();
