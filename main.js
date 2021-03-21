@@ -247,6 +247,7 @@ function make_plot(data) {
       }
     }
   }
+
   for (const hist of hists) { // draw histograms
     const { nbins, bmin, bmid, bmax, axis } = hist;
     const { connect=false, color='#009' } = hist.style;
@@ -262,6 +263,25 @@ function make_plot(data) {
     svg.append('path').attrs({
       d, fill: 'none', stroke: color, 'stroke-width': 2
     });
+  }
+
+  if (data.hists.some(h => 'name' in h)) { // draw legend
+    const g = svg.append('g').attrs({
+      'text-anchor': 'start', 'font-family': 'sans-serif', 'font-size': 16
+    });
+    let i = 0;
+    for (const h of data.hists) {
+      const { name=null, style={} } = h;
+      if (!name) continue;
+      g.append('text').attrs({
+        x: 0, y: i*20, fill: style.color || '#009'
+      }).text(name);
+      ++i;
+    }
+    const bb = g.node().getBBox();
+    g.attr('transform',
+      `translate(${sx.range()[1]-Math.ceil(bb.width)-bb.x-5},` +
+      `${sy.range()[1]-bb.y+5})`);
   }
 
   // { const info = make(fig,'div');
