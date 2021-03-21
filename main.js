@@ -157,13 +157,15 @@ function make_plot(data) {
 
     if (normalize) {
       const sum = bmid.reduce((a,x) => a+x);
-      for (let i=0; i<nbins; ++i) {
-        bmid[i] /= sum;
-        bmin[i] /= sum;
-        bmax[i] /= sum;
+      if (sum!==0) {
+        for (let i=0; i<nbins; ++i) {
+          bmid[i] /= sum;
+          bmin[i] /= sum;
+          bmax[i] /= sum;
+        }
+        ey[0] /= sum;
+        ey[1] /= sum;
       }
-      ey[0] /= sum;
-      ey[1] /= sum;
     }
 
     hists.push({nbins,bmin,bmid,bmax,axis,style});
@@ -369,12 +371,14 @@ document.addEventListener('DOMContentLoaded', () => {
           link.href = root+'data/'+path+'.json';
           link.target = '_blank';
           link.onclick = function(e) {
-            e.preventDefault();
-            const s = window.history.state;
-            if (!(s && s.path===path))
-              window.history.pushState(
-                { path }, '', '?'+encodeURIComponent(path));
-            load_plot(path);
+            if (!e.ctrlKey) {
+              e.preventDefault();
+              const s = window.history.state;
+              if (!(s && s.path===path))
+                window.history.pushState(
+                  { path }, '', '?'+encodeURIComponent(path));
+              load_plot(path);
+            }
           };
         }
         dirs.pop();
