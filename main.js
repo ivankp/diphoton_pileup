@@ -52,7 +52,7 @@ function make_plot(data) {
       else cap.appendChild(document.createTextNode(x));
     });
   }
-  let { axes, bins } = data;
+  let { axes, bins } = data.hists[0];
   if (!(Array.isArray(axes) && axes.length))
     throw new Error('"axes" must be a non-empty array');
 
@@ -264,7 +264,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const ul = make(_id('menu'),'ul');
     ul.className = 'file-tree';
     (function read_tree(tree,ul) {
-      for (const [name,x] of Object.entries(tree)) {
+      for (const [,name,x] of
+        Object.entries(tree).map(x => {
+          const [key,val] = x;
+          const tokens = key.split(/([0-9.+-]+)/);
+          for (let i=0, n = tokens.length; i<n; ++i) {
+            if (i%2) tokens[i] = parseFloat(tokens[i]);
+            else tokens[i] = tokens[i].toLowerCase();
+          }
+          return [ tokens, key, val ];
+        }).sort((a,b) => {
+          a = a[0]; b = b[0];
+          const n = Math.min(a.length,b.length);
+          for (let i=0; i<n; ++i) {
+            if (a[i] < b[i]) return -1;
+            if (b[i] < a[i]) return  1;
+          }
+          return a.length - b.length;
+        })
+      ) {
         dirs.push(name);
         const li = make(ul,'li');
         if (typeof x === 'object') {
