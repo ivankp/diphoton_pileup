@@ -286,29 +286,39 @@ function make_plot(data) {
       `${sy.range()[1]-bb.y+5})`);
   }
 
-  // { const info = make(fig,'div');
-  //   info.className = 'info';
-  //   let bin;
-  //   svg_node.onmousemove = function(e) {
-  //     const cmt = this.getScreenCTM();
-  //     if (e.touches) e = e.touches[0];
-  //     bin = d3.bisectLeft(axis,sx.invert((e.clientX-cmt.e)/cmt.a));
-  //     if (bin < 1) bin = 1;
-  //     else if (bin > nbins) bin = nbins;
-  //     info.textContent =
-  //       `bin ${bin} [${axis[bin-1]},${axis[bin]}): `
-  //       + JSON.stringify(bins[bin]);
-  //   }
-  // }
-  // function print_overflow(bin,label) {
-  //   if (rany(bin)) {
-  //     const info = make(fig,'div');
-  //     info.className = 'info';
-  //     info.textContent = `${label}: ${JSON.stringify(bin)}`;
-  //   }
-  // }
-  // print_overflow(bins[0],'underflow');
-  // print_overflow(last(bins),'overflow');
+  { // print bin info
+    const info = make(fig,'div');
+    info.className = 'info';
+    const n = hists.length;
+    const p = hists.map(() => make(info,'p'));
+    svg_node.onmousemove = function(e) {
+      const cmt = this.getScreenCTM();
+      if (e.touches) e = e.touches[0];
+      const x = sx.invert((e.clientX-cmt.e)/cmt.a);
+      for (let i=0; i<n; ++i) {
+        const {nbins,axis} = hists[i];
+        const {bins} = data.hists[i];
+        let bin = d3.bisectLeft(axis,x);
+        if (bin < 1) bin = 1;
+        else if (bin > nbins) bin = nbins;
+        p[i].textContent =
+          `bin ${bin} [${axis[bin-1]},${axis[bin]}): `
+          + JSON.stringify(bins[bin]);
+      }
+    }
+    const t = make(info,'table');
+    function print_overflow(bins,label) {
+      const tr = make(t,'tr');
+      if (rany(bins)) {
+        make(tr,'td').textContent = label;
+        const td = make(tr,'td');
+        for (const bin of bins)
+          make(td,'p').textContent = JSON.stringify(bin);
+      }
+    }
+    print_overflow(data.hists.map(h => h.bins[0]),'underflow:');
+    print_overflow(data.hists.map(h => last(h.bins)),'overflow:');
+  }
 }
 
 function load_plot(path) {

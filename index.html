@@ -84,6 +84,21 @@ ul.file-tree li:not(.exp) ul {
   font-family: monospace;
   font-size: smaller;
 }
+.info p, .info tr, .info td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.info table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+.info td {
+  vertical-align: top;
+}
+.info td:nth-child(2) {
+  padding-left: 3px;
+}
 
 .left > p {
   margin: 10px 0;
@@ -120,7 +135,7 @@ a.ext::after {
   <div id="menu"></div>
   <p>
     <a href="https://indico.cern.ch/event/1015328/contributions/4265064/"
-      class="ext" target="_blank">Slides</a>
+      class="ext" target="_blank">Details</a>
   </p><p style="font-size: smaller;">
     Click to expand or show items.<br>
     <kbd>Ctrl</kbd>-click to show data.<br>
